@@ -18,8 +18,11 @@ public class UserController: ControllerBase {
         _userManager = userManager;
     }
 
+
+    [HttpGet]
     public async Task<IActionResult> GetUsers() {
-        return Ok(await _userManager.GetUsersInRoleAsync(UserRoles.User));
+        var users = await _userManager.GetUsersInRoleAsync(UserRoles.User);
+        return Ok(users);
     }
 
 }

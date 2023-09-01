@@ -42,7 +42,8 @@ function createExtraActions() {
     const baseUrl = `${process.env.REACT_APP_API_URL}`;
 
     return {
-        login: login()
+        login: login(),
+        register: register(),
     };    
 
     function login() {
@@ -51,11 +52,19 @@ function createExtraActions() {
             async ({ email, password }) => await fetchWrapper.post(`${baseUrl}/Auth/login`, { email, password })
         );
     }
+
+    function register() {
+        return createAsyncThunk(
+            `${name}/register`,
+            async ({ username, email, password }) => await fetchWrapper.post(`${baseUrl}/Auth/register`, { username, email, password })
+        );
+    }
 }
 
 function createExtraReducers() {
     return {
-        ...login()
+        ...login(),
+        ...register()
     };
 
     function login() {
@@ -66,7 +75,6 @@ function createExtraReducers() {
             },
             [fulfilled]: (state, action) => {
                 const user = action.payload;
-                console.log(user);
                 // store user details and jwt token in local storage to keep user logged in between page refreshes
                 localStorage.setItem('user', JSON.stringify(user));
                 state.user = user;
@@ -74,6 +82,21 @@ function createExtraReducers() {
                 // get return url from location state or default to home page
                 const { from } = history.location.state || { from: { pathname: '/home' } };
                 history.navigate(from);
+            },
+            [rejected]: (state, action) => {
+                state.error = action.error;
+            }
+        };
+    }
+
+    function register() {
+        var { pending, fulfilled, rejected } = extraActions.register;
+        return {
+            [pending]: (state) => {
+                state.error = null;
+            },
+            [fulfilled]: (state, action) => {
+                history.navigate("/login");
             },
             [rejected]: (state, action) => {
                 state.error = action.error;

@@ -7,6 +7,7 @@ import { Login } from 'pages/login/Login';
 import { Admin } from 'pages/admin/Admin';
 import { Landing } from 'pages/landing/Landing';
 import { Unauthorized } from 'pages/unauthorized/UnAuthorized';
+import { Signup } from 'pages/signup/Signup';
 
 export { App };
 
@@ -17,9 +18,9 @@ function App() {
     history.location = useLocation();
 
     return (
-        <div className="min-h-full">
+        <div className="">
             <Nav />
-            <div className="container pt-4 pb-4">
+            <div className="container mx-auto">
                 <Routes>
                     <Route path='/' element={<Landing/>}/>
                     <Route
@@ -40,6 +41,7 @@ function App() {
                         }
                     />
                     <Route path="/login" element={<Login />} />
+                    <Route path="/signup" element={<Signup />} />
                     <Route path="/unauthorized" element={<Unauthorized />}/>
                 </Routes>
             </div>
