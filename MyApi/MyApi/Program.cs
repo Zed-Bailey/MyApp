@@ -61,10 +61,47 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowLocalhostOrigin",
+        builder =>
+        {
+            builder.WithOrigins(configuration["FrontendUrl:Dev"])
+                   .AllowAnyHeader()
+                   .AllowAnyMethod();
+        });
+});
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowProdOrigin",
+        builder =>
+        {
+            builder.WithOrigins(configuration["FrontendUrl:Prod"])
+                   .AllowAnyHeader()
+                   .AllowAnyMethod();
+        });
+});
+
+
 var app = builder.Build();
 
 using(var scope = app.Services.CreateScope()) {
-    await Seeder.Seed(scope.ServiceProvider);
+    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+    try {
+        await Seeder.Seed(scope.ServiceProvider);
+    } catch(Exception e) {
+        logger.LogError("An error occured while trying to seed the DB: {Exception}", e);
+        return;
+    }
+    
+    if(app.Environment.IsDevelopment()) {        
+        logger.LogInformation("Development environment, applying AllowLocalhostOrigin policy");
+        app.UseCors("AllowLocalhostOrigin");
+    } else if(app.Environment.IsProduction()) {
+        logger.LogInformation("Production environment, applying AllowProdOrigin policy");
+        app.UseCors("AllowProdOrigin");
+    }
 }
 
 
