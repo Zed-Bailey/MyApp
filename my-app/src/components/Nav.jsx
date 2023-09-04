@@ -2,29 +2,27 @@ import { NavLink } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { authActions } from 'store/store';
-import { Button, Navbar } from 'flowbite-react';
 import { history } from 'helpers';
-
-function DefaultNavBar() {
+import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, Button } from "@nextui-org/react";
+import { DropdownItem, DropdownTrigger, Dropdown, DropdownMenu, Avatar } from "@nextui-org/react";
+function DefaultNavBarItems() {
     return (
         <>
-            <Navbar.Link href="#">
-                <p>
-                    Home
-                </p>
-            </Navbar.Link>
-            <Navbar.Link href="#">
-                About
-            </Navbar.Link>
-            <Navbar.Link href="#">
-                Services
-            </Navbar.Link>
-            <Navbar.Link href="#">
-                Pricing
-            </Navbar.Link>
-            <Navbar.Link href="#">
-                Contact
-            </Navbar.Link>
+            <NavbarItem>
+                <Link color="foreground" href="/">
+                    Landing
+                </Link>
+            </NavbarItem>
+            <NavbarItem isActive>
+                <Link href="#" aria-current="page">
+                    Customers
+                </Link>
+            </NavbarItem>
+            <NavbarItem>
+                <Link color="foreground" href="#">
+                    Integrations
+                </Link>
+            </NavbarItem>
         </>
     );
 }
@@ -32,54 +30,109 @@ function DefaultNavBar() {
 function LoggedInNavBar(userRoles) {
     return (
         <>
-            <Navbar.Link href="/home">Home</Navbar.Link>
+            <NavbarItem>
+                <Link href="/home">
+                    Home
+                </Link>
+            </NavbarItem>
+
+            <NavbarItem>
+                <Link href="#" aria-current="page">
+                    Something else
+                </Link>
+            </NavbarItem>
 
             {
                 // dynamically include different navlinks based on the users roles
-                userRoles.includes("ADMIN") ? <Navbar.Link href="/admin">Admin</Navbar.Link>
+                userRoles.includes("ADMIN") ?
+                    <NavbarItem isActive>
+                        <Link href="/admin" aria-current="page">
+                            Admin
+                        </Link>
+                    </NavbarItem>
                     : null
             }
+
+
 
         </>
     );
 }
 
+function DefaultNavButtons() {
+    return (
+        <>
+            <NavbarItem className="hidden lg:flex">
+                <Link href="/login">Login</Link>
+            </NavbarItem>
+            <NavbarItem>
+                <Button as={Link} color="primary" href="/signup" variant="flat">
+                    Sign Up
+                </Button>
+            </NavbarItem>
+        </>
+    );
+}
+
+function LoggedInNavButtons(authUser) {
+    const dispatch = useDispatch();
+    const logout = () => dispatch(authActions.logout());
+
+
+    return (
+        <NavbarContent as="div" justify="end">
+
+            <Dropdown placement="bottom-end">
+                <DropdownTrigger>
+                    <Avatar
+                        isBordered
+                        as="button"
+                        className="transition-transform"
+                        color="secondary"
+                        name="Jason Hughes"
+                        size="sm"
+                        src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
+                    />
+                </DropdownTrigger>
+                <DropdownMenu aria-label="Profile Actions" variant="flat">
+                    <DropdownItem key="profile" className="h-14 gap-2">
+                        <p className="font-semibold">Signed in as</p>
+                        <p className="font-semibold">{authUser.username}</p>
+                    </DropdownItem>
+                    <DropdownItem key="settings">My Settings</DropdownItem>
+                    <DropdownItem key="team_settings">Team Settings</DropdownItem>
+                    <DropdownItem key="analytics">Analytics</DropdownItem>
+                    <DropdownItem key="system">System</DropdownItem>
+                    <DropdownItem key="configurations">Configurations</DropdownItem>
+                    <DropdownItem key="help_and_feedback">Help & Feedback</DropdownItem>
+                    <DropdownItem key="logout" color="danger" onPress={logout}>
+                        Log Out
+                    </DropdownItem>
+                </DropdownMenu>
+            </Dropdown>
+        </NavbarContent>
+    );
+}
 
 
 export function Nav() {
     const authUser = useSelector(x => x.auth.user);
-    const dispatch = useDispatch();
-    const logout = () => dispatch(authActions.logout());
 
     return (
-        <Navbar
-            fluid
-            rounded
-        >
-            <Navbar.Brand href="/">
-                <img
-                    className="mr-3 h-6 sm:h-9"
-                    src="/favicon.ico"
-                />
-                <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">
-                    Programming proj
-                </span>
-            </Navbar.Brand>
-
-            <div className="flex md:order-2">
+        <Navbar shouldHideOnScroll>
+            <NavbarBrand>
+                <p className="font-bold text-inherit">Programming Project</p>
+            </NavbarBrand>
+            <NavbarContent className="hidden sm:flex gap-4" justify="center">
                 {
-                    !authUser ? <div className="flex flex-row gap-2"><Button outline onClick={() => history.navigate('/signup')}>Sign up</Button> <Button onClick={() => history.navigate('/login')}>Login</Button> </div> : <Button onClick={logout} >Logout</Button>
+                    !authUser ? <DefaultNavBarItems /> : LoggedInNavBar(authUser.roles)
                 }
-
-                <Navbar.Toggle />
-            </div>
-
-            <Navbar.Collapse>
+            </NavbarContent>
+            <NavbarContent justify="end">
                 {
-                    // dynamically change the navbar content based on the logged in user status
-                    !authUser ? DefaultNavBar() : LoggedInNavBar(authUser.roles)
+                    !authUser ? <DefaultNavButtons /> : LoggedInNavButtons(authUser)
                 }
-            </Navbar.Collapse>
+            </NavbarContent>
         </Navbar>
     );
 }

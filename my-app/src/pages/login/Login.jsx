@@ -7,11 +7,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { history } from 'helpers';
 import { authActions } from 'store/store';
 
-import { Button, Label, TextInput } from 'flowbite-react';
 
-import { Spinner } from 'flowbite-react';
-import { Alert } from 'flowbite-react';
-import { HiInformationCircle } from 'react-icons/hi';
+import { Button, Input, Spinner } from '@nextui-org/react';
 
 export function Login() {
     const dispatch = useDispatch();
@@ -38,7 +35,81 @@ export function Login() {
         return dispatch(authActions.login({ email, password }));
     }
 
+
     return (
+        <div className='flex flex-row justify-center'>
+            <div className='col'>
+                <h3 className='text-2xl'>Login</h3>
+                <form onSubmit={handleSubmit(onSubmit)}>
+                    <div className='flex flex-col gap-5'>
+                        <Input
+                            required
+                            type="email" label="Email" placeholder="Enter your email" {...register('email')}
+                            validationState={errors.email ? "invalid" : ""}
+                            errorMessage={errors.email ? errors.email.message : ""}
+                        />
+                        <Input
+                            required
+                            {...register('password')}
+                            label="Password"
+                            type="password"
+                            placeholder='Password'
+
+                        />
+                        <Button type='submit' spinner={spinner()} isLoading={isSubmitting} >Login</Button>
+                    </div>
+                </form>
+
+                {/* {authError &&
+                      <Alert
+                      color="failure"
+                      icon={HiInformationCircle}
+                    >
+                      <span>
+                        <p>
+                          <span className="font-medium me-2">
+                            Error!
+                          </span>
+                           {authError.message}
+                        </p>
+                      </span>
+                    </Alert>
+                } */}
+            </div>
+        </div>
+    );
+
+
+}
+
+// https://nextui.org/docs/components/button#loading
+function spinner() {
+    return(
+        <svg
+        className="animate-spin h-5 w-5 text-current"
+        fill="none"
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <circle
+          className="opacity-25"
+          cx="12"
+          cy="12"
+          r="10"
+          stroke="currentColor"
+          strokeWidth="4"
+        />
+        <path
+          className="opacity-75"
+          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+          fill="currentColor"
+        />
+      </svg>
+    );
+}
+
+/*
+return (
         <div className='flex flex-row justify-center'>
             
             <form className="flex flex-col gap-4 w-lg-1/4" onSubmit={handleSubmit(onSubmit)}>
@@ -100,5 +171,4 @@ export function Login() {
             
         </div>
     )
-    
-}
+*/
