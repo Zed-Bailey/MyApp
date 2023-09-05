@@ -1,7 +1,7 @@
 # react web app with asp.net api jwt authentication
 also has user roles admin and user
 
-react, redux, tailwind css and the [react flowbite ui kit](https://www.flowbite-react.com/)
+react, redux, tailwind css and the mantine ui kit
 
 ## frontend
 ```
