@@ -40,7 +40,7 @@ export function Signup() {
     return (
         <div className='flex flex-row justify-center'>
             <div className='col'>
-                <h3 className='text-2xl'>Login</h3>
+                <h3 className='text-2xl'>Signup</h3>
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <div className='flex flex-col gap-5'>
                         <Input
@@ -64,7 +64,7 @@ export function Signup() {
                             placeholder='Password'
 
                         />
-                        <Button type='submit' spinner={spinner()} isLoading={isSubmitting} >Login</Button>
+                        <Button type='submit' spinner={spinner()} isLoading={isSubmitting} >Signup</Button>
                     </div>
                 </form>
 

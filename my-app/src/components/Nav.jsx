@@ -3,23 +3,23 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import { authActions } from 'store/store';
 import { history } from 'helpers';
-import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, Button } from "@nextui-org/react";
+import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, Button, NavbarMenuToggle, NavbarMenu, NavbarMenuItem } from "@nextui-org/react";
 import { DropdownItem, DropdownTrigger, Dropdown, DropdownMenu, Avatar } from "@nextui-org/react";
-function DefaultNavBarItems() {
+import { useState } from 'react';
+
+
+function DefaultNavBarItems() {    
     return (
+        
         <>
-            <NavbarItem>
-                <Link color="foreground" href="/">
+            
+            <NavbarItem >
+                <Link href='/' >
                     Landing
                 </Link>
             </NavbarItem>
-            <NavbarItem isActive>
-                <Link href="#" aria-current="page">
-                    Customers
-                </Link>
-            </NavbarItem>
             <NavbarItem>
-                <Link color="foreground" href="#">
+                <Link href="/login">
                     Integrations
                 </Link>
             </NavbarItem>
@@ -74,9 +74,8 @@ function DefaultNavButtons() {
     );
 }
 
-function LoggedInNavButtons(authUser) {
-    const dispatch = useDispatch();
-    const logout = () => dispatch(authActions.logout());
+function LoggedInNavButtons(authUser, logout) {
+
 
 
     return (
@@ -117,21 +116,42 @@ function LoggedInNavButtons(authUser) {
 
 export function Nav() {
     const authUser = useSelector(x => x.auth.user);
-
+    const dispatch = useDispatch();
+    const logout = () => dispatch(authActions.logout());
+    const [isMenuOpen, setMenuOpen] = useState(false);
     return (
-        <Navbar shouldHideOnScroll>
-            <NavbarBrand>
-                <p className="font-bold text-inherit">Programming Project</p>
-            </NavbarBrand>
-            <NavbarContent className="hidden sm:flex gap-4" justify="center">
-                {
-                    !authUser ? <DefaultNavBarItems /> : LoggedInNavBar(authUser.roles)
-                }
-            </NavbarContent>
-            <NavbarContent justify="end">
-                {
-                    !authUser ? <DefaultNavButtons /> : LoggedInNavButtons(authUser)
-                }
+        <Navbar shouldHideOnScroll onMenuOpenChange={setMenuOpen}>
+            <NavbarContent>
+                <NavbarMenuToggle
+                    aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+                    className="sm:hidden"
+                />
+                <NavbarBrand>
+                    <p className="font-bold text-inherit">Programming Project</p>
+                </NavbarBrand>
+                <NavbarContent className="hidden sm:flex gap-4" justify="center">
+                    {
+                        !authUser ? <DefaultNavBarItems /> : LoggedInNavBar(authUser.roles)
+                    }
+                </NavbarContent>
+                <NavbarContent justify="end">
+                    {
+                        !authUser ? <DefaultNavButtons /> : LoggedInNavButtons(authUser, logout)
+                    }
+                </NavbarContent>
+                <NavbarMenu>
+                    <NavbarMenuItem>
+                        <Link>Collapsed</Link>
+                    </NavbarMenuItem>
+
+                    <NavbarMenuItem>
+                        <Link>Menu</Link>
+                    </NavbarMenuItem>
+
+                    <NavbarMenuItem>
+                        <Link>Items</Link>
+                    </NavbarMenuItem>
+                </NavbarMenu>
             </NavbarContent>
         </Navbar>
     );

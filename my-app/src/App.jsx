@@ -10,9 +10,9 @@ import { Unauthorized } from 'pages/unauthorized/UnAuthorized';
 import { Signup } from 'pages/signup/Signup';
 import { NextUIProvider } from '@nextui-org/react';
 
-export { App };
 
-function App() {
+
+export function App() {
     // init custom history object to allow navigation from 
     // anywhere in the react app (inside or outside components)
     history.navigate = useNavigate();

@@ -60,21 +60,13 @@ export function Login() {
                     </div>
                 </form>
 
-                {/* {authError &&
-                      <Alert
-                      color="failure"
-                      icon={HiInformationCircle}
-                    >
-                      <span>
-                        <p>
-                          <span className="font-medium me-2">
-                            Error!
-                          </span>
-                           {authError.message}
+                {authError &&
+                    <div className='rounded bg-red-400 p-3 mt-5'>
+                        <p className='text-red-950'>
+                            {authError.message}
                         </p>
-                      </span>
-                    </Alert>
-                } */}
+                    </div>
+                }
             </div>
         </div>
     );
